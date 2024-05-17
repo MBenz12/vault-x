@@ -1,0 +1,1108 @@
+{
+  "version": "0.1.0",
+  "name": "vaultx",
+  "instructions": [
+    {
+      "name": "vaultConfigInit",
+      "docs": [
+        "VAULT CONFIG INSTRUCTIONS"
+      ],
+      "accounts": [
+        {
+          "name": "vaultConfig",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "Vault configuration account to be initialized"
+          ]
+        },
+        {
+          "name": "initializer",
+          "isMut": true,
+          "isSigner": true,
+          "docs": [
+            "Hard-coded initializer account used to initialize the vault config once"
+          ]
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "Authority that can manage the vault configuration (change treasury, etc.)"
+          ]
+        },
+        {
+          "name": "treasury",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "The treasury where the creation fee is transferred to"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "The system program used for initializing the vault config"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "creationFee",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "vaultConfigUpdateAuthority",
+      "accounts": [
+        {
+          "name": "vaultConfig",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "newAuthority",
+          "type": "publicKey"
+        }
+      ]
+    },
+    {
+      "name": "vaultConfigUpdateCreationFee",
+      "accounts": [
+        {
+          "name": "vaultConfig",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "newCreationFee",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "vaultConfigUpdateTreasury",
+      "accounts": [
+        {
+          "name": "vaultConfig",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "newTreasury",
+          "type": "publicKey"
+        }
+      ]
+    },
+    {
+      "name": "createVault",
+      "docs": [
+        "VAULT INSTRUCTIONS"
+      ],
+      "accounts": [
+        {
+          "name": "vaultConfig",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "Global vault configuration account"
+          ]
+        },
+        {
+          "name": "treasury",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "The treasury where the creation fee is transferred to."
+          ]
+        },
+        {
+          "name": "merkleTree",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "createKey",
+          "isMut": false,
+          "isSigner": true,
+          "docs": [
+            "An ephemeral signer used as a seed for the Multisig PDA.",
+            "Must be a signer to prevent front-running attacks by others."
+          ]
+        },
+        {
+          "name": "administrator",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "CreateVaultArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "addMember",
+      "accounts": [
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "founder",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "rentPayer",
+          "isMut": true,
+          "isSigner": true,
+          "isOptional": true,
+          "docs": [
+            "The account used to pay for additional storage if the vault needs to expand."
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "Required if reallocation is needed"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "VaultAddMemberArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "removeMember",
+      "accounts": [
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "founder",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "VaultRemoveMemberArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "addFounder",
+      "accounts": [
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "administrator",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "rentPayer",
+          "isMut": true,
+          "isSigner": true,
+          "isOptional": true,
+          "docs": [
+            "The account used to pay for additional storage if the vault needs to expand"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "Required if reallocation is needed"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "VaultAddFounderArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "removeFounder",
+      "accounts": [
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "administrator",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "VaultRemoveFounderArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "updateFounderThreshold",
+      "accounts": [
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "administrator",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "VaultUpdateFounderThresholdArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "createFounderTransaction",
+      "docs": [
+        "FOUNDER TRANSACTION INSTRUCTIONS"
+      ],
+      "accounts": [
+        {
+          "name": "transaction",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "creator",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "VaultFounderCreateTransactionArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "approveFounderTransaction",
+      "accounts": [
+        {
+          "name": "transaction",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "founder",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "rejectFounderTransaction",
+      "accounts": [
+        {
+          "name": "transaction",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "founder",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "cancelFounderTransaction",
+      "accounts": [
+        {
+          "name": "transaction",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "founder",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "executeFounderTransaction",
+      "accounts": [
+        {
+          "name": "transaction",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "founder",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "createMemberTransaction",
+      "docs": [
+        "MEMBER TRANSACTION INSTRUCTIONS"
+      ],
+      "accounts": [
+        {
+          "name": "transaction",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "creator",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "merkleTree",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "accountCompressionProgram",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "Account compression program"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "VaultMemberCreateTransactionArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "executeMemberTransaction",
+      "accounts": [
+        {
+          "name": "transaction",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "member",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "VaultFounderTransaction",
+      "docs": [
+        "Account representing a founder transaction in the Vault"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "creator",
+            "type": "publicKey"
+          },
+          {
+            "name": "vault",
+            "type": "publicKey"
+          },
+          {
+            "name": "transactionIndex",
+            "type": "u32"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": "VaultTransactionStatus"
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "fundBump",
+            "docs": [
+              "Derivation bump of the fund PDA this transaction belongs to"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "ephemeralSignerBumps",
+            "type": "bytes"
+          },
+          {
+            "name": "message",
+            "type": {
+              "defined": "VaultTransactionMessage"
+            }
+          },
+          {
+            "name": "approved",
+            "type": {
+              "vec": "publicKey"
+            }
+          },
+          {
+            "name": "rejected",
+            "type": {
+              "vec": "publicKey"
+            }
+          },
+          {
+            "name": "cancelled",
+            "type": {
+              "vec": "publicKey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultMemberTransaction",
+      "docs": [
+        "Account representing a member transaction in the Vault"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "creator",
+            "type": "publicKey"
+          },
+          {
+            "name": "vault",
+            "type": "publicKey"
+          },
+          {
+            "name": "transactionIndex",
+            "type": "u32"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "fundBump",
+            "docs": [
+              "Derivation bump of the fund PDA this transaction belongs to"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "ephemeralSignerBumps",
+            "type": "bytes"
+          },
+          {
+            "name": "message",
+            "type": {
+              "defined": "VaultTransactionMessage"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultConfig",
+      "docs": [
+        "Account representing the global Vault configuration"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "creationFee",
+            "type": "u64"
+          },
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "treasury",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Vault",
+      "docs": [
+        "Account representing the Vault"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "allowListMerkleTree",
+            "type": "publicKey"
+          },
+          {
+            "name": "administrator",
+            "type": "publicKey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "createKey",
+            "type": "publicKey"
+          },
+          {
+            "name": "founders",
+            "type": {
+              "vec": "publicKey"
+            }
+          },
+          {
+            "name": "members",
+            "type": {
+              "vec": "publicKey"
+            }
+          },
+          {
+            "name": "staleTransactionIndex",
+            "type": "u32"
+          },
+          {
+            "name": "founderThreshold",
+            "type": "u16"
+          },
+          {
+            "name": "transactionIndex",
+            "type": "u32"
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "VaultFounderCreateTransactionArgs",
+      "docs": [
+        "Arguments required to create a founder transaction"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "ephemeralSigners",
+            "type": "u8"
+          },
+          {
+            "name": "transactionMessage",
+            "type": "bytes"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultMemberCreateTransactionArgs",
+      "docs": [
+        "Arguments required to create a member transaction"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "ephemeralSigners",
+            "type": "u8"
+          },
+          {
+            "name": "transactionMessage",
+            "type": "bytes"
+          },
+          {
+            "name": "allowListRoot",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "allowListLeaf",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "allowListLeafIndex",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultAddFounderArgs",
+      "docs": [
+        "Arguments required to add a new founder to the vault"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "newFounder",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultAddMemberArgs",
+      "docs": [
+        "Arguments required to add a new member to the vault"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "newMember",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CreateVaultArgs",
+      "docs": [
+        "Arguments required to create a vault"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "founderThreshold",
+            "type": "u16"
+          },
+          {
+            "name": "initialFounders",
+            "type": {
+              "vec": "publicKey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultRemoveFounderArgs",
+      "docs": [
+        "Arguments required to remove a founder from the vault"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "founder",
+            "type": "publicKey"
+          },
+          {
+            "name": "newFounderThreshold",
+            "type": {
+              "option": "u16"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultRemoveMemberArgs",
+      "docs": [
+        "Arguments required to remove a member from the vault"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "member",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultUpdateFounderThresholdArgs",
+      "docs": [
+        "Arguments required to update the founder threshold"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "newFounderThreshold",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultInstruction",
+      "docs": [
+        "Represents an instruction within a transaction"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "programIdIndex",
+            "type": "u8"
+          },
+          {
+            "name": "accountIndexes",
+            "type": "bytes"
+          },
+          {
+            "name": "data",
+            "type": "bytes"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultTransactionMessage",
+      "docs": [
+        "Represents a message containing instructions for a transaction"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "numSigners",
+            "docs": [
+              "The number of signer public keys in the account_keys vec"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "numWritableSigners",
+            "docs": [
+              "The number of writable signer public keys in the account_keys vec.",
+              "Scenario of someone who is paying rent, so lamports change refer to mut and signer."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "numWritableNonSigners",
+            "docs": [
+              "The number of writable non-signer public keys in the account_keys vec.",
+              "Normal state accounts are considered writable non-signers."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "accountKeys",
+            "docs": [
+              "The account keys required for the transaction.",
+              "The way the keys are arranged are by the following (0 - n index order):",
+              "1. Writable Signers",
+              "2. Non-Writable Signers",
+              "3. Writable Non-Signers",
+              "4. Non-Writable Non-Signers",
+              "5. Program IDs (if any)"
+            ],
+            "type": {
+              "vec": "publicKey"
+            }
+          },
+          {
+            "name": "instructions",
+            "docs": [
+              "The instructions that make up the transaction"
+            ],
+            "type": {
+              "vec": {
+                "defined": "VaultInstruction"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultTransactionStatus",
+      "docs": [
+        "Enum representing the status of a Vault Transaction"
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Executed"
+          },
+          {
+            "name": "Rejected"
+          },
+          {
+            "name": "Cancelled"
+          },
+          {
+            "name": "Approved"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidRoleCount",
+      "msg": "Invalid role count. Valid role count is between 1 and MAX_VAULT_ROLES"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidFounderThreshold",
+      "msg": "Invalid founder threshold"
+    },
+    {
+      "code": 6002,
+      "name": "Unauthorized",
+      "msg": "Unauthorized action attempted"
+    },
+    {
+      "code": 6003,
+      "name": "MissingAccount",
+      "msg": "Missing account required for transaction"
+    },
+    {
+      "code": 6004,
+      "name": "FounderAlreadyExists",
+      "msg": "Founder already exists"
+    },
+    {
+      "code": 6005,
+      "name": "MemberAlreadyExists",
+      "msg": "Member already exists"
+    },
+    {
+      "code": 6006,
+      "name": "FounderNotFound",
+      "msg": "Founder does not exist"
+    },
+    {
+      "code": 6007,
+      "name": "MemberNotFound",
+      "msg": "Member does not exist"
+    },
+    {
+      "code": 6008,
+      "name": "InvalidStaleTransactionIndex",
+      "msg": "Invalid stale transaction index"
+    },
+    {
+      "code": 6009,
+      "name": "InvalidProgram",
+      "msg": "Account is not part of the program"
+    },
+    {
+      "code": 6010,
+      "name": "AlreadyApproved",
+      "msg": "Member already approved the transaction"
+    },
+    {
+      "code": 6011,
+      "name": "AlreadyRejected",
+      "msg": "Member already rejected the transaction"
+    },
+    {
+      "code": 6012,
+      "name": "AlreadyCancelled",
+      "msg": "Member already cancelled the transaction"
+    },
+    {
+      "code": 6013,
+      "name": "InvalidVaultTransactionMessage",
+      "msg": "Transaction message is malformed"
+    },
+    {
+      "code": 6014,
+      "name": "ProtectedAccount",
+      "msg": "Cannot modify protected account"
+    },
+    {
+      "code": 6015,
+      "name": "InvalidAccount",
+      "msg": "Invalid account provided"
+    },
+    {
+      "code": 6016,
+      "name": "InvalidAllowlist",
+      "msg": "Invalid allowlist provided"
+    },
+    {
+      "code": 6017,
+      "name": "InvalidNumberOfAccounts",
+      "msg": "Wrong number of accounts provided"
+    },
+    {
+      "code": 6018,
+      "name": "InvalidTransactionStatus",
+      "msg": "Invalid transaction status for voting"
+    },
+    {
+      "code": 6019,
+      "name": "InvalidInstructionAccount",
+      "msg": "Invalid instruction account"
+    },
+    {
+      "code": 6020,
+      "name": "AdminCannotBeFounder",
+      "msg": "Administrator cannot be a founder"
+    },
+    {
+      "code": 6021,
+      "name": "AdminCannotBeMember",
+      "msg": "Administrator cannot be a member"
+    }
+  ],
+  "metadata": {
+    "address": "GLdveVwYn2cSsuj5DTARPC8RLrTkCDRq484e8C91Zd7A",
+    "origin": "anchor",
+    "binaryVersion": "0.29.0",
+    "libVersion": "=0.29.0"
+  }
+}

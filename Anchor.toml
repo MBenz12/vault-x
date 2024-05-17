@@ -1,0 +1,36 @@
+[toolchain]
+anchor_version = "0.29.0" # `anchor-cli` version to use
+solana_version = "1.17.0" # Solana version to use
+
+[features]
+seeds = false
+skip-lint = false
+
+[programs.localnet]
+vaultx = "GLdveVwYn2cSsuj5DTARPC8RLrTkCDRq484e8C91Zd7A"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "localnet"
+wallet = "~/.config/solana/id.json"
+
+[[test.validator.account]]
+address = "D3oQ6QxSYk6aKUsmBTa9BghFQvbRi7kxP6h95NSdjjXz"
+filename = "test-keypairs/multisig-account.json"
+
+[scripts]
+test = "npx nyc mocha --node-option require=ts-node/register --extension ts -t 1000000 tests/index.ts"
+
+[[test.genesis]]
+address = "noopb9bkMVfRPU8AsbpTUg8AQkHtKwMYZiFUjNRtMmV"
+program = ".deps/noop.so"
+
+[[test.genesis]]
+address = "cmtDvXumGCrqC1Age74AVPhSRVXJMd8PJS91L8KbNCK"
+program = ".deps/compression.so"
+
+[[test.genesis]]
+address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+program = ".deps/metadata.so"

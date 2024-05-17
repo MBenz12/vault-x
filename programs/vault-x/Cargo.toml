@@ -1,0 +1,24 @@
+[package]
+name = "vault-x"
+version = "0.1.0"
+description = "A Solana multisig wallet with role based access controls"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "vaultx"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+testing = []
+default = []
+
+[dependencies]
+anchor-lang = { version = "=0.29.0", features = ["allow-missing-optionals"] }
+anchor-spl = { version="=0.29.0", features=["token"] }
+solana-program = "1.17.4"
+spl-account-compression = { version = "0.3.0", features = ["cpi"] }
+solana-security-txt = "1.1.1"

@@ -1,0 +1,10 @@
+.anchor
+.crates
+.DS_Store
+.keys
+.nyc_output
+coverage
+lib
+node_modules
+target
+vault-x-sdk/dist

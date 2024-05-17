@@ -1,0 +1,14 @@
+.anchor
+.crates
+.DS_Store
+.keys
+.nyc_output
+build
+coverage
+dist
+generated
+idl
+lib
+node_modules
+target
+test-keypairs
